@@ -6,24 +6,7 @@ sudo: false
 go:
   - 1.10.x
 
-go_import_path: github.com/tuneinc/truss
-
-before_install:
-  # protobuf
-  # download, unzip in $HOME, add to $PATH
-  - wget https://github.com/google/protobuf/releases/download/v3.2.0/protoc-3.2.0-linux-x86_64.zip
-  - mv protoc-3.2.0-linux-x86_64.zip $HOME
-  - unzip ~/protoc-3.2.0-linux-x86_64.zip -d $HOME
-  - export PATH=$HOME/bin/:$PATH
-
-  # Dependencies
-  - go get -v github.com/golang/protobuf/protoc-gen-go
-  - go get -v github.com/jteeuwen/go-bindata/...
-
-install:
-  # install our protoc plugin and truss
-  - make dependencies
-  - make
+go_import_path: github.com/zaquestion/truss
 
 notifications:
   email: false
