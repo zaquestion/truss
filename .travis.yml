@@ -3,10 +3,18 @@ language: go
 # use containers which run faster and have cache
 sudo: false
 
+notifications:
+  email: false
+
 go:
   - 1.9.x
   - 1.10.x
-  - tip
+  - master
+
+stages:
+  - test
+  - name: deploy
+    if: tag IS present
 
 go_import_path: github.com/tuneinc/truss
 before_install:
@@ -17,27 +25,21 @@ before_install:
   - unzip ~/protoc-3.2.0-linux-x86_64.zip -d $HOME
   - export PATH=$HOME/bin/:$PATH
 
-  # Dependencies
-  - go get -v github.com/golang/protobuf/protoc-gen-go
-  - go get -v github.com/jteeuwen/go-bindata/...
-
 install:
   # install our protoc plugin and truss
   - make dependencies
   - make
 
-notifications:
-  email: false
+jobs:
+  include:
+    - stage: deploy
+      go: 1.10.x
+      script: curl -sL https://git.io/goreleaser | bash
 
-deploy:
-  provider: script
-  skip_cleanup: true
-  script: curl -sL https://git.io/goreleaser | bash
-  go: 1.10.x
-  on:
-    branch: master
-    tags: true
-    condition: $TRAVIS_OS_NAME = linux
+matrix:
+  allow_failures:
+    - go: master
+  fast_finish: true
 
 env:
   global:
