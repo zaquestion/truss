@@ -3,13 +3,20 @@ language: go
 # use containers which run faster and have cache
 sudo: false
 
+notifications:
+  email: false
+
 go:
-  - tip
-  - 1.10.x
   - 1.9.x
+  - 1.10.x
+  - master
+
+stages:
+  - test
+  - name: deploy
+    if: tag IS present
 
 go_import_path: github.com/tuneinc/truss
-
 before_install:
   # protobuf
   # download, unzip in $HOME, add to $PATH
@@ -23,8 +30,15 @@ install:
   - make dependencies
   - make
 
-script:
-  - make test
+jobs:
+  include:
+    - stage: test
+      script: make test
+    - stage: deploy
+      go: 1.10.x
+      script: curl -sL https://git.io/goreleaser | bash
 
-notifications:
-  email: false
+matrix:
+  allow_failures:
+    - go: master
+  fast_finish: true
