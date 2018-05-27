@@ -4,7 +4,9 @@ language: go
 sudo: false
 
 go:
+  - 1.9.x
   - 1.10.x
+  - tip
 
 go_import_path: github.com/tuneinc/truss
 before_install:
@@ -31,6 +33,7 @@ deploy:
   provider: script
   skip_cleanup: true
   script: curl -sL https://git.io/goreleaser | bash
+  go: 1.10.x
   on:
     branch: master
     tags: true
