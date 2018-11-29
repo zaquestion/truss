@@ -8,17 +8,22 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/golang/protobuf/proto"
-	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"github.com/gogo/protobuf/proto"
+	plugin "github.com/gogo/protobuf/protoc-gen-gogo/plugin"
 	"github.com/pkg/errors"
 )
 
 // GeneratePBDotGo creates .pb.go files from the passed protoPaths and writes
 // them to outDir.
 func GeneratePBDotGo(protoPaths, gopath []string, outDir string) error {
-	genGoCode := "--go_out=" +
-		"plugins=grpc:" +
-		outDir
+
+	genGoCode := "--gogofaster_out=" +
+		"Mgoogle/protobuf/any.proto=github.com/gogo/protobuf/types," +
+		"Mgoogle/protobuf/duration.proto=github.com/gogo/protobuf/types," +
+		"Mgoogle/protobuf/struct.proto=github.com/gogo/protobuf/types," +
+		"Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types," +
+		"Mgoogle/protobuf/wrappers.proto=github.com/gogo/protobuf/types," +
+		"plugins=grpc:" + outDir
 
 	_, err := exec.LookPath("protoc-gen-go")
 	if err != nil {
